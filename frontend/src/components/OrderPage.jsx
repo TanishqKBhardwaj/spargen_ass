@@ -11,7 +11,7 @@ const OrderPage = () => {
 
   const [productDetails, setProductDetails] = useState(null);
   const [quantity, setQuantity] = useState(1);
-  const [submit,setOnSubmit]=useState(false);
+  const [submit, setOnSubmit] = useState(false);
   const [shippingAddress, setShippingAddress] = useState({
     address: '',
     city: '',
@@ -27,9 +27,11 @@ const OrderPage = () => {
             Authorization: `Bearer ${token}`
           }
         });
+        console.log(data);
         const item = data.cart.items.find(item =>
-          item.product._id.toString().trim() === productId.trim()
+          item?.product?._id?.toString().trim() === productId.trim()
         );
+
         if (item) {
           setProductDetails(item.product);
           setQuantity(item.quantity);
@@ -49,7 +51,7 @@ const OrderPage = () => {
   };
 
   const handleOrderSubmit = async () => {
-   
+
     if (!productDetails) return;
 
     if (!isShippingAddressValid()) {
@@ -76,7 +78,7 @@ const OrderPage = () => {
     };
 
     try {
-         setOnSubmit(true);
+      setOnSubmit(true);
       const { data } = await axios.post('http://localhost:5000/api/order/', orderPayload, {
         headers: {
           'Content-Type': 'application/json',
@@ -88,8 +90,8 @@ const OrderPage = () => {
       navigate('/orders'); // Redirect after success
     } catch (error) {
       toast.error('Failed to place order');
-    }finally{
-         setOnSubmit(false);
+    } finally {
+      setOnSubmit(false);
     }
   };
 
